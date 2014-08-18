@@ -1,0 +1,109 @@
+repositories {
+    mavenCentral()
+    maven {
+        url "https://raw.github.com/sensorberg-dev/android-sdk/mvn-repo";
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'android-maven'
+
+android {
+    compileSdkVersion 20
+    buildToolsVersion "20.0"
+
+    defaultConfig {
+        minSdkVersion 18
+        targetSdkVersion 19
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_5
+            targetCompatibility JavaVersion.VERSION_1_5
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+}
+
+dependencies {
+    compile 'com.sensorberg.sdk:sensorberg-sdk:+'
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java
+}
+
+task jar(type: Jar) {
+    from 'build/classes/release'
+}
+
+artifacts {
+    archives sourcesJar
+    archives jar
+}
+
+group = "com.sensorberg.sdk.bootstrapper"
+artifactId = "sensorberg-sdk-bootstrapper"
+version = VERSION
+
+uploadArchives {
+    def tempDir = buildDir.path + '/github-android-sdk'
+    def branch = "mvn-repo"
+    doFirst{
+        println "cloning temp repo if not exists"
+        if (!file(tempDir).exists() ){
+            exec{
+                commandLine 'git', 'clone', 'git@github.com:sensorberg-dev/android-sdk.git', tempDir, '-b', branch
+            }
+        }
+        else{
+            exec {
+                workingDir tempDir
+                commandLine "git", "reset", "HEAD", "--hard"
+            }
+            exec {
+                workingDir tempDir
+                commandLine "git", "clean", "-f"
+            }
+        }
+    }
+    repositories {
+        mavenDeployer {
+
+            repository(url: "file://${tempDir}")
+
+            pom.project {
+                inceptionYear '2014'
+                name 'Sensorberg Android SDK Bootstrapper'
+                artifactId artifactId
+                packaging 'jar'
+                description 'Android SDK bootstrapper that helps to integrate the SDK'
+                url 'https://github.com/sensorberg-dev/android-sdk'
+
+                scm {
+                    url 'https://github.com/sensorberg-dev/android-sdk-bootstrapper'
+                    connection 'https://github.com/sensorberg-dev/android-sdk-bootstrapper'
+                    developerConnection 'https://github.com/sensorberg-dev/android-sdk-bootstrapper'
+                }
+            }
+        }
+    }
+    doLast{
+        exec {
+            workingDir tempDir
+            commandLine "git", "add", "."
+        }
+        exec {
+            workingDir tempDir
+            commandLine "git", "commit",  "-m\"Release bootstrapper ${VERSION}\""
+        }
+        println "pushing release"
+        exec {
+            workingDir tempDir
+            commandLine "git", "push", "origin", branch
+        }
+    }
+}
