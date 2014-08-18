@@ -28,7 +28,7 @@ android {
 }
 
 dependencies {
-    compile 'com.sensorberg.sdk:sensorberg-sdk:+'
+    compile 'com.sensorberg.sdk:sensorberg-sdk:0.3.4'
 }
 
 task sourcesJar(type: Jar) {
