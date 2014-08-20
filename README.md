@@ -12,3 +12,9 @@ maven {
         url "https://raw.github.com/sensorberg-dev/android-sdk/mvn-repo"
     }
 ```
+
+#Release Notes:
+
+##1.0.1
+
+* removed the fixed icon of the presentation configuration, if you want an icon, extend the bootstrapper and write your own void presentBeaconEvent(BeaconEvent beaconEvent) 

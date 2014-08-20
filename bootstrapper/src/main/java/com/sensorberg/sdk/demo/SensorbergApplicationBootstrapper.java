@@ -28,7 +28,6 @@ public class SensorbergApplicationBootstrapper implements ScannerListener, Resol
     private Resolver resolver;
     private Presenter presenter;
     private Scanner scanner;
-    private int notificationIconResourceId;
 
     public SensorbergApplicationBootstrapper bootstrapApplication( ScannerConfiguration scannerConfiguration, ResolverConfiguration resolverConfiguration, PresenterConfiguration presenterConfiguration){
         scanner = Scanner.setupInstance(scannerConfiguration);
@@ -100,7 +99,6 @@ public class SensorbergApplicationBootstrapper implements ScannerListener, Resol
         if(beaconEvent.getAction() != null) {
             PresentationConfiguration presentationConfiguration = new PresentationConfiguration();
             presentationConfiguration.setBeaconEvent(beaconEvent);
-            presentationConfiguration.setNotificationIcon(this.notificationIconResourceId);
             presentationConfiguration.setNotificationId(beaconEvent.hashCode());
             Presentation presentation = presenter.createPresentation(presentationConfiguration);
             try {
@@ -113,9 +111,5 @@ public class SensorbergApplicationBootstrapper implements ScannerListener, Resol
 
     @Override
     public void onResolutionFailed(Resolution resolution, Throwable cause) {
-    }
-
-    public void setNotificationIconResourceId(int notificationIconResourceId) {
-        this.notificationIconResourceId = notificationIconResourceId;
     }
 }
