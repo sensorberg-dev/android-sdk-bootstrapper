@@ -76,7 +76,15 @@ task verifyReleaseBranch(type: Exec){
 
     doLast {
         String currentRefName = standardOutput.toString().replaceAll("\\s","") //strip whitespaces
-        String originMasterRef = file("../.git/refs/remotes/origin/master").text.replaceAll("\\s","") //strip whitespaces
+        //if you generically find the location of the file, "git rev-parse --show-toplevel"
+        def getGitRoot = "git rev-parse --show-toplevel".execute()
+
+        if (getGitRoot.waitFor() != 0){
+            throw new GradleException("could not get the root of your git project")
+        }
+        def gitRoot = getGitRoot.text.replaceAll("\\s","")
+
+        String originMasterRef = file(gitRoot + "/.git/refs/remotes/origin/master").text.replaceAll("\\s","") //strip whitespaces
 
         if (currentRefName.equalsIgnoreCase(originMasterRef)) {
             throw new GradleException("you are trying to release from a branch that is not origin/master. Your current revision is ${originMasterRef} but master on origin is ${currentRefName}")
