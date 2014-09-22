@@ -39,10 +39,48 @@ artifacts {
 group = "com.sensorberg.sdk.bootstrapper"
 artifactId = "sensorberg-sdk-bootstrapper"
 version = VERSION
+def tagName = "v${VERSION}"
+
+task verifyUpload(type: Exec) {
+    description "verify if this build can be archived. fails if the git tag allready exists"
+    doFirst{
+        exec {
+            commandLine "git", "fetch", "--tags"
+        }
+    }
+    commandLine "git", "tag"
+    standardOutput = new ByteArrayOutputStream()
+
+    doLast {
+        def output = standardOutput.toString()
+        output.eachLine{
+            if(it.equalsIgnoreCase(tagName)){
+                throw new GradleException("version ${version} has already been released as tag ${tagName}")
+            }
+        }
+        println "version ${version} is ready to be realease as tag ${tagName}"
+    }
+}
+
+task verifyReleaseBranch(type: Exec){
+    description "verify if this build can be archived. fails if the git tag allready exists"
+
+    commandLine "git", "rev-parse",  "--abbrev-ref", "HEAD"
+    standardOutput = new ByteArrayOutputStream()
+
+    doLast {
+        String branchName = standardOutput.toString()
+
+        if (!branchName.equalsIgnoreCase("master")) {
+            throw new GradleException("you are trying to release from a branch that is not master. Your current branch is ${branchName}")
+        }
+    }
+}
 
 uploadArchives {
     def tempDir = buildDir.path + '/github-android-sdk'
     def branch = "mvn-repo"
+
     doFirst{
         if (!file(tempDir).exists() ){
             println "cloning temp repo"
@@ -89,6 +127,14 @@ uploadArchives {
         }
     }
     doLast{
+        println "creating tag"
+        exec {
+            commandLine "git", "tag", tagName
+        }
+        println "pushing tag"
+        exec {
+            commandLine "git", "push", currentRemoteName,  tagName
+        }
         exec {
             workingDir tempDir
             commandLine "git", "add", "."
@@ -104,3 +150,6 @@ uploadArchives {
         }
     }
 }
+
+uploadArchives.dependsOn(verifyReleaseBranch)
+uploadArchives.dependsOn(verifyUpload)
