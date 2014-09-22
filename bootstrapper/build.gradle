@@ -65,6 +65,12 @@ task verifyUpload(type: Exec) {
 task verifyReleaseBranch(type: Exec){
     description "verify if this build can be archived. fails if the git tag allready exists"
 
+    doFirst{
+        exec {
+            commandLine "git", "fetch"
+        }
+    }
+
     commandLine "git", "rev-parse", "HEAD"
     standardOutput = new ByteArrayOutputStream()
 
