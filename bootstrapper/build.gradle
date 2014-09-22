@@ -65,14 +65,15 @@ task verifyUpload(type: Exec) {
 task verifyReleaseBranch(type: Exec){
     description "verify if this build can be archived. fails if the git tag allready exists"
 
-    commandLine "git", "rev-parse",  "--abbrev-ref", "HEAD"
+    commandLine "git", "rev-parse", "HEAD"
     standardOutput = new ByteArrayOutputStream()
 
     doLast {
-        String branchName = standardOutput.toString()
+        String currentRefName = standardOutput.toString().replaceAll("\\s","") //strip whitespaces
+        String originMasterRef = file("../.git/refs/remotes/origin/master").text.replaceAll("\\s","") //strip whitespaces
 
-        if (!branchName.equalsIgnoreCase("master")) {
-            throw new GradleException("you are trying to release from a branch that is not master. Your current branch is ${branchName}")
+        if (currentRefName.equalsIgnoreCase(originMasterRef)) {
+            throw new GradleException("you are trying to release from a branch that is not origin/master. Your current revision is ${originMasterRef} but master on origin is ${currentRefName}")
         }
     }
 }
