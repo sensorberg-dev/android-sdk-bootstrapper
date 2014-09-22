@@ -76,9 +76,8 @@ task verifyReleaseBranch(type: Exec){
 
     doLast {
         String currentRefName = standardOutput.toString().replaceAll("\\s","") //strip whitespaces
-        //if you generically find the location of the file, "git rev-parse --show-toplevel"
-        def getGitRoot = "git rev-parse --show-toplevel".execute()
 
+        def getGitRoot = "git rev-parse --show-toplevel".execute()
         if (getGitRoot.waitFor() != 0){
             throw new GradleException("could not get the root of your git project")
         }
