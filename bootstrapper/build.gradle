@@ -85,7 +85,7 @@ task verifyReleaseBranch(type: Exec){
 
         String originMasterRef = file(gitRoot + "/.git/refs/remotes/origin/master").text.replaceAll("\\s","") //strip whitespaces
 
-        if (currentRefName.equalsIgnoreCase(originMasterRef)) {
+        if (!currentRefName.equalsIgnoreCase(originMasterRef)) {
             throw new GradleException("you are trying to release from a branch that is not origin/master. Your current revision is ${originMasterRef} but master on origin is ${currentRefName}")
         }
     }
