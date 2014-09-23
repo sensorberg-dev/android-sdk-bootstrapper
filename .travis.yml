@@ -18,5 +18,7 @@ android:
     #- extra-android-m2repository
     - addon-google_apis-google-20
 
+notifications:
+  slack: sensorberg:bYfkpm6TExFzF5gdpQz2IHDh
 
 script: ./gradlew assemble
