@@ -94,6 +94,7 @@ task verifyReleaseBranch(type: Exec){
 uploadArchives {
     def tempDir = buildDir.path + '/github-android-sdk'
     def branch = "mvn-repo"
+    def currentRemoteName = "origin"
 
     doFirst{
         if (!file(tempDir).exists() ){
