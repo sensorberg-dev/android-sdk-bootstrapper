@@ -52,7 +52,7 @@ apply from: "verifyTasks.gradle"
 apply from: "uploadGithub.gradle"
 
 if (System.getProperty("sensorberg.useGithubRepo")) {
-    project.ext.repoDir = "file://${buildDir.path}/github-android-sdk"
+    project.ext.repoDir = "${buildDir.path}/github-android-sdk"
     version = "${VERSION}"
 
     uploadArchives.mustRunAfter(prepareGithubUpload)
@@ -73,7 +73,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
 
-            repository(url: project.ext.repoDir)
+            repository(url: "file://${project.ext.repoDir}")
 
             pom.groupId = "com.sensorberg.sdk.bootstrapper"
 
