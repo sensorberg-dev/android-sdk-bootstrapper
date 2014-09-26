@@ -1,12 +1,9 @@
+
 repositories {
     mavenCentral()
     maven {
         url "https://raw.github.com/sensorberg-dev/android-sdk/mvn-repo";
     }
-    maven {
-        url "file://${System.getProperty("user.home")}/.m2/repository/";
-    }
-
 }
 
 apply plugin: 'com.android.library'
@@ -28,7 +25,7 @@ android {
 }
 
 dependencies {
-    compile 'com.sensorberg.sdk:sensorberg-sdk:0.6.0-SNAPSHOT@aar'
+    compile 'com.sensorberg.sdk:sensorberg-sdk:0.6.0@aar'
 }
 
 task sourcesJar(type: Jar) {
@@ -43,96 +40,47 @@ artifacts {
 group = "com.sensorberg.sdk.bootstrapper"
 artifactId = "sensorberg-sdk-bootstrapper"
 version = VERSION
-def tagName = "v${VERSION}"
 
-task verifyUpload(type: Exec) {
-    description "verify if this build can be archived. fails if the git tag allready exists"
-    doFirst{
-        exec {
-            commandLine "git", "fetch", "--tags"
-        }
-    }
-    commandLine "git", "tag"
-    standardOutput = new ByteArrayOutputStream()
+project.ext.tagName = "v${VERSION}"
+project.ext.branch = "mvn-repo"
+//the name of our origin
+project.ext.currentRemoteName = "origin"
+project.ext.releaseRepo = "git@github.com:sensorberg-dev/android-sdk.git"
 
-    doLast {
-        def output = standardOutput.toString()
-        output.eachLine{
-            if(it.equalsIgnoreCase(tagName)){
-                throw new GradleException("version ${version} has already been released as tag ${tagName}")
-            }
-        }
-        println "version ${version} is ready to be realease as tag ${tagName}"
-    }
-}
 
-task verifyReleaseBranch(type: Exec){
-    description "verify if this build can be archived. fails if the git tag allready exists"
+apply from: "verifyTasks.gradle"
+apply from: "uploadGithub.gradle"
 
-    doFirst{
-        exec {
-            commandLine "git", "fetch"
-        }
-    }
+if (System.getProperty("sensorberg.useGithubRepo")) {
+    project.ext.repoDir = "file://${buildDir.path}/github-android-sdk"
+    version = "${VERSION}"
 
-    commandLine "git", "rev-parse", "HEAD"
-    standardOutput = new ByteArrayOutputStream()
+    uploadArchives.mustRunAfter(prepareGithubUpload)
+    pushToGithub.mustRunAfter(uploadArchives)
 
-    doLast {
-        String currentRefName = standardOutput.toString().replaceAll("\\s","") //strip whitespaces
+    uploadArchives.dependsOn(prepareGithubUpload)
+    pushToGithub.dependsOn(uploadArchives)
 
-        def getGitRoot = "git rev-parse --show-toplevel".execute()
-        if (getGitRoot.waitFor() != 0){
-            throw new GradleException("could not get the root of your git project")
-        }
-        def gitRoot = getGitRoot.text.replaceAll("\\s","")
+    prepareGithubUpload.dependsOn(verifyReleaseBranch)
+    prepareGithubUpload.dependsOn(verifyUpload)
 
-        String originMasterRef = file(gitRoot + "/.git/refs/remotes/origin/master").text.replaceAll("\\s","") //strip whitespaces
-
-        if (!currentRefName.equalsIgnoreCase(originMasterRef)) {
-            throw new GradleException("you are trying to release from a branch that is not origin/master. Your current revision is ${originMasterRef} but master on origin is ${currentRefName}")
-        }
-    }
+} else {
+    project.ext.repoDir = "file://${System.getProperty("user.home")}/.m2/repository/"
+    version = "${VERSION}-SNAPSHOT"
 }
 
 uploadArchives {
-    def tempDir = buildDir.path + '/github-android-sdk'
-    def branch = "mvn-repo"
-    def currentRemoteName = "origin"
-
-    doFirst{
-        if (!file(tempDir).exists() ){
-            println "cloning temp repo"
-            exec{
-                commandLine 'git', 'clone', 'git@github.com:sensorberg-dev/android-sdk.git', tempDir, '-b', branch
-            }
-        }
-        else{
-            println "updating temp repo"
-            exec {
-                workingDir tempDir
-                commandLine "git", "reset", "HEAD", "--hard"
-            }
-            exec {
-                workingDir tempDir
-                commandLine "git", "clean", "-f"
-            }
-            exec {
-                workingDir tempDir
-                commandLine "git", "pull", "origin", branch
-            }
-
-        }
-    }
     repositories {
         mavenDeployer {
 
-            repository(url: "file://${tempDir}")
+            repository(url: project.ext.repoDir)
+
+            pom.groupId = "com.sensorberg.sdk.bootstrapper"
 
             pom.project {
                 inceptionYear '2014'
                 name 'Sensorberg Android SDK Bootstrapper'
-                artifactId artifactId
+                artifactId "sensorberg-sdk-bootstrapper"
                 packaging 'aar'
                 description 'Android SDK bootstrapper that helps to integrate the SDK'
                 url 'https://github.com/sensorberg-dev/android-sdk'
@@ -144,31 +92,6 @@ uploadArchives {
                 }
             }
         }
-    }
-    doLast{
-        println "creating tag"
-        exec {
-            commandLine "git", "tag", tagName
-        }
-        println "pushing tag"
-        exec {
-            commandLine "git", "push", currentRemoteName,  tagName
-        }
-        exec {
-            workingDir tempDir
-            commandLine "git", "add", "."
-        }
-        exec {
-            workingDir tempDir
-            commandLine "git", "commit",  "-m\"Release bootstrapper ${VERSION}\""
-        }
-        println "pushing release"
-        exec {
-            workingDir tempDir
-            commandLine "git", "push", "origin", branch
-        }
+
     }
 }
-
-uploadArchives.dependsOn(verifyReleaseBranch)
-uploadArchives.dependsOn(verifyUpload)
