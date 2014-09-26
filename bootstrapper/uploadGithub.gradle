@@ -38,7 +38,7 @@ task pushToGithub << {
     }
     exec {
         workingDir tempDir
-        commandLine "git", "commit",  "-m\"Release ${tagName}\""
+        commandLine "git", "commit",  "-m\"Release ${project.getName()} ${tagName}\""
     }
     println "creating tag for mvn repo"
     exec {
