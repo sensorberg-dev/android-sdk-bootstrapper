@@ -13,6 +13,16 @@ maven {
     }
 ```
 
+#What can you do with this:
+
+##Custom presentation of the Messages:
+
+If you want to present the messages yourself, extend the Bootstrapper and implement your own
+
+   protected void presentBeaconEvent(BeaconEvent beaconEvent)
+
+be aware that **beaconEvent.getAction()** might be null, because there is no action associated with this beacon.
+
 #Release Notes:
 
 ##1.0.1
