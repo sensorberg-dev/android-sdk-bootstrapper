@@ -66,10 +66,4 @@ public class ActionActivity extends Activity{
         intent.putExtra(EXTRA_BEACON_EVENT, beaconEvent);
         return intent;
     }
-
-    /**
-     * Created by falkorichter on 26/09/14.
-     */
-    public static class activities {
-    }
 }
