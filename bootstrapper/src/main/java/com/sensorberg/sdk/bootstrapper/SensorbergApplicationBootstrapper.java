@@ -26,6 +26,7 @@ public class SensorbergApplicationBootstrapper implements Plattform.ForegroundSt
 
     private Messenger serviceMessenger;
     private boolean presentationDelegationEnabled;
+    private boolean hostApplicationInForegroundNotDelivered;
 
     public void setPresentationDelegationEnabled(boolean value) {
         presentationDelegationEnabled = value;
@@ -74,8 +75,6 @@ public class SensorbergApplicationBootstrapper implements Plattform.ForegroundSt
         service.putExtra(SensorbergService.EXTRA_API_KEY, apiKey);
 
         application.bindService(service, beaconServiceConnection, Context.BIND_AUTO_CREATE);
-
-        application.startService(service);
     }
 
     @Override
@@ -95,6 +94,8 @@ public class SensorbergApplicationBootstrapper implements Plattform.ForegroundSt
             if (presentationDelegationEnabled){
                 registerForPresentationDelegation();
             }
+        } else {
+            hostApplicationInForegroundNotDelivered = true;
         }
     }
 
@@ -108,16 +109,18 @@ public class SensorbergApplicationBootstrapper implements Plattform.ForegroundSt
     }
 
     private void unRegisterFromPresentationDelegation() {
-        sendReplyToMessage(SensorbergService.MSG_UNREGISTER_PRESENSTATION_DELEGATE);
+        sendReplyToMessage(SensorbergService.MSG_UNREGISTER_PRESENTATION_DELEGATE);
     }
 
     private void sendReplyToMessage(int messageType) {
-        Message msg = Message.obtain(null, messageType);
-        msg.replyTo = messenger;
-        try {
-            serviceMessenger.send(msg);
-        } catch (RemoteException e) {
-            e.printStackTrace();
+        if (serviceMessenger != null) {
+            Message msg = Message.obtain(null, messageType);
+            msg.replyTo = messenger;
+            try {
+                serviceMessenger.send(msg);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -140,6 +143,20 @@ public class SensorbergApplicationBootstrapper implements Plattform.ForegroundSt
         }
     }
 
+    public void updatePresenterConfiguration(PresenterConfiguration presenterConfiguration) {
+        if (serviceMessenger != null){
+            Message message = Message.obtain(null, SensorbergService.MSG_SET_PRESENTER_CONFIGURATION);
+
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(SensorbergService.MSG_SET_PRESENTER_CONFIGURATION_PRESENTER_CONFIGURATION, presenterConfiguration);
+            message.obj = bundle;
+            try {
+                serviceMessenger.send(message);
+            } catch (RemoteException e) {
+                Log.e(TAG, "could not send the hostApplicationInForeground message", e);
+            }
+        }
+    }
 
     private ServiceConnection beaconServiceConnection = new ServiceConnection() {
         // Called when the connection with the service is established
@@ -148,6 +165,10 @@ public class SensorbergApplicationBootstrapper implements Plattform.ForegroundSt
             serviceMessenger = new Messenger(service);
             if (presentationDelegationEnabled){
                 registerForPresentationDelegation();
+            }
+            if (hostApplicationInForegroundNotDelivered){
+                sendEmptyMessage(SensorbergService.MSG_APPLICATION_IN_FOREGROUND);
+                hostApplicationInForegroundNotDelivered = false;
             }
         }
 

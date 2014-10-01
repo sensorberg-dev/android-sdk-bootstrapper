@@ -27,11 +27,11 @@ public class BackgroundDetector implements Application.ActivityLifecycleCallback
         }
     };
     private final Handler handler;
-    private boolean isInForeground = true;
+    private boolean isInForeground = false;
     private boolean appForeGroundState = isInForeground;
     private Plattform.ForegroundStateListener foregroundStateListener = Plattform.ForegroundStateListener.NONE;
 
-    public BackgroundDetector(Plattform.ForegroundStateListener foregroundStateListener) {
+    public BackgroundDetector(Plattform.ForegroundStateListener foregroundStateListener){
         this.handler = new Handler();
         this.foregroundStateListener = foregroundStateListener;
     }
