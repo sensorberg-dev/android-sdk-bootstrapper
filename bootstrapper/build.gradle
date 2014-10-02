@@ -5,7 +5,7 @@ repositories {
         url "https://raw.github.com/sensorberg-dev/android-sdk/mvn-repo";
     }
     maven {
-        url "http://bigbang.local:8881/nexus/content/repositories/snapshots"
+        url "http://172.17.12.103:8881/nexus/content/repositories/snapshots"
     }
 }
 
@@ -64,6 +64,7 @@ if (System.getProperty("sensorberg.useGithubRepo")) {
     uploadArchives.dependsOn(prepareGithubUpload)
     pushToGithub.dependsOn(uploadArchives)
 
+    prepareGithubUpload.dependsOn(verifyNoSnapshotDependencies)
     prepareGithubUpload.dependsOn(verifyReleaseBranch)
     prepareGithubUpload.dependsOn(verifyUpload)
 
@@ -77,6 +78,8 @@ uploadArchives {
         mavenDeployer {
 
             repository(url: "file://${project.ext.repoDir}")
+
+            snapshotRepository(url: "http://172.17.12.103:8881/nexus/content/repositories/snapshots")
 
             pom.groupId = "com.sensorberg.sdk.bootstrapper"
 

@@ -47,3 +47,12 @@ task verifyReleaseBranch(type: Exec){
         }
     }
 }
+
+task verifyNoSnapshotDependencies << {
+    project.configurations.compile.each {
+        if (it.name.contains("-SNAPSHOT")){
+            throw new GradleException("You are referencing the dependency ${it.name} which is a snapshot on a propper release!")
+        }
+
+    };
+}
