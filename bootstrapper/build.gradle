@@ -4,6 +4,9 @@ repositories {
     maven {
         url "https://raw.github.com/sensorberg-dev/android-sdk/mvn-repo";
     }
+    maven {
+        url "http://bigbang.local:8881/nexus/content/repositories/snapshots"
+    }
 }
 
 apply plugin: 'com.android.library'
@@ -25,7 +28,7 @@ android {
 }
 
 dependencies {
-    compile 'com.sensorberg.sdk:sensorberg-sdk:0.7.0@aar'
+    compile 'com.sensorberg.sdk:sensorberg-sdk:0.8.0-SNAPSHOT@aar'
 }
 
 task sourcesJar(type: Jar) {
