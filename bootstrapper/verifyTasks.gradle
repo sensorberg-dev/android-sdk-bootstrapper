@@ -56,3 +56,9 @@ task verifyNoSnapshotDependencies << {
 
     };
 }
+
+task verifySnapshotRelease {
+    if (!project.version.contains("-SNAPSHOT") || project.version == null){
+        throw new GradleException("This is not a snapshot release. Version is '${project.version}'")
+    }
+}

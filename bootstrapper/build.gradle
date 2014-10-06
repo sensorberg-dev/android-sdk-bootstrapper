@@ -51,8 +51,6 @@ project.ext.currentRemoteName = "origin"
 project.ext.releaseRepo = "git@github.com:sensorberg-dev/android-sdk.git"
 
 
-apply from: "verifyTasks.gradle"
-apply from: "uploadGithub.gradle"
 
 if (System.getProperty("sensorberg.useGithubRepo")) {
     project.ext.repoDir = "${buildDir.path}/github-android-sdk"
@@ -73,13 +71,18 @@ if (System.getProperty("sensorberg.useGithubRepo")) {
     version = "${VERSION}-SNAPSHOT"
 }
 
+apply from: "verifyTasks.gradle"
+apply from: "uploadGithub.gradle"
+
 uploadArchives {
     repositories {
         mavenDeployer {
 
             repository(url: "file://${project.ext.repoDir}")
 
-            snapshotRepository(url: "http://172.17.12.103:8881/nexus/content/repositories/snapshots")
+            snapshotRepository(url: "http://172.17.12.103:8881/nexus/content/repositories/snapshots"){
+                authentication(userName: System.getProperty("sensorberg.nexusUsername"), password: System.getProperty("sensorberg.nexusPassword"))
+            }
 
             pom.groupId = "com.sensorberg.sdk.bootstrapper"
 
