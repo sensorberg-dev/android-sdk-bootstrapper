@@ -7,10 +7,10 @@ This repo contains the bootstrapper for the [Sensorberg Android SDK](https://git
 
 The artifacts are deployed at **https://raw.github.com/sensorberg-dev/android-sdk/mvn-repo**
 
-```
+```groovy
 maven {
         url "https://raw.github.com/sensorberg-dev/android-sdk/mvn-repo"
-    }
+}
 ```
 
 #What can you do with this:
