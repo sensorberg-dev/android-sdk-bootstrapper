@@ -47,14 +47,18 @@ project.ext.branch = "mvn-repo"
 project.ext.currentRemoteName = "origin"
 project.ext.releaseRepo = "git@github.com:sensorberg-dev/android-sdk.git"
 
+if (System.getProperty("sensorberg.useGithubRepo")) {
+    project.ext.repoDir = "${buildDir.path}/github-android-sdk"
+    version = "${VERSION}"
+} else {
+    project.ext.repoDir = "file://${System.getProperty("user.home")}/.m2/repository/"
+    version = "${VERSION}-SNAPSHOT"
+}
 
 apply from: "verifyTasks.gradle"
 apply from: "uploadGithub.gradle"
 
 if (System.getProperty("sensorberg.useGithubRepo")) {
-    project.ext.repoDir = "${buildDir.path}/github-android-sdk"
-    version = "${VERSION}"
-
     uploadArchives.mustRunAfter(prepareGithubUpload)
     pushToGithub.mustRunAfter(uploadArchives)
 
@@ -63,10 +67,6 @@ if (System.getProperty("sensorberg.useGithubRepo")) {
 
     prepareGithubUpload.dependsOn(verifyReleaseBranch)
     prepareGithubUpload.dependsOn(verifyUpload)
-
-} else {
-    project.ext.repoDir = "file://${System.getProperty("user.home")}/.m2/repository/"
-    version = "${VERSION}-SNAPSHOT"
 }
 
 uploadArchives {
