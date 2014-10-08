@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.sensorberg.sdk.Logger;
 import com.sensorberg.sdk.SensorbergService;
+import com.sensorberg.sdk.internal.AndroidPlattform;
 import com.sensorberg.sdk.internal.Plattform;
 import com.sensorberg.sdk.presenter.PresenterConfiguration;
 import com.sensorberg.sdk.resolver.BeaconEvent;
@@ -24,19 +25,10 @@ public class SensorbergApplicationBootstrapper implements Plattform.ForegroundSt
     private static final String TAG = "ServiceBootStrapper";
     private final Application application;
 
-    private Messenger serviceMessenger;
-    private boolean presentationDelegationEnabled;
-    private boolean hostApplicationInForegroundNotDelivered;
-
-    public void setPresentationDelegationEnabled(boolean value) {
-        presentationDelegationEnabled = value;
-        if (value) {
-            registerForPresentationDelegation();
-        }
-        else{
-            unRegisterFromPresentationDelegation();
-        }
-    }
+    protected Messenger serviceMessenger;
+    protected boolean presentationDelegationEnabled;
+    protected boolean hostApplicationInForegroundNotDelivered;
+    private final Messenger messenger = new Messenger(new IncomingHandler());
 
     class IncomingHandler extends Handler {
         @Override
@@ -54,28 +46,44 @@ public class SensorbergApplicationBootstrapper implements Plattform.ForegroundSt
         }
     }
 
+    public SensorbergApplicationBootstrapper(Application application, String apiKey, boolean enablePresentationDelegation, PresenterConfiguration presenterConfiguration) {
+        this.application = application;
+        this.presentationDelegationEnabled = enablePresentationDelegation;
+        if(new AndroidPlattform(application).isBluetoothLowEnergySupported()) {
+            Intent service = new Intent(application, SensorbergService.class);
+            service.putExtra(SensorbergService.EXTRA_PRESENTER_CONFIGURATION, presenterConfiguration);
+            service.putExtra(SensorbergService.EXTRA_API_KEY, apiKey);
+            application.bindService(service, beaconServiceConnection, Context.BIND_AUTO_CREATE);
+        }
+        else{
+            Log.d(TAG, "This device does not support BTLE ");
+        }
+    }
+
     public void presentBeaconEvent(BeaconEvent beaconEvent) {
         Intent intent = ActionActivity.intentFor(application, beaconEvent);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         application.startActivity(intent);
     }
 
-    final Messenger messenger = new Messenger(new IncomingHandler());
+    public void setPresentationDelegationEnabled(boolean value) {
+        presentationDelegationEnabled = value;
+        if (value) {
+            registerForPresentationDelegation();
+        }
+        else{
+            unRegisterFromPresentationDelegation();
+        }
+    }
+
+
 
 
     public SensorbergApplicationBootstrapper(Application application, PresenterConfiguration presenterConfiguration, String apiKey) {
         this(application, apiKey, false, presenterConfiguration);
     }
 
-    public SensorbergApplicationBootstrapper(Application application, String apiKey, boolean enablePresentationDelegation, PresenterConfiguration presenterConfiguration) {
-        this.application = application;
-        this.presentationDelegationEnabled = enablePresentationDelegation;
-        Intent service = new Intent(application, SensorbergService.class);
-        service.putExtra(SensorbergService.EXTRA_PRESENTER_CONFIGURATION, presenterConfiguration);
-        service.putExtra(SensorbergService.EXTRA_API_KEY, apiKey);
 
-        application.bindService(service, beaconServiceConnection, Context.BIND_AUTO_CREATE);
-    }
 
     @Override
     public void hostApplicationInBackground() {
@@ -99,7 +107,7 @@ public class SensorbergApplicationBootstrapper implements Plattform.ForegroundSt
         }
     }
 
-    private void sendEmptyMessage(int messageType) {
+    protected void sendEmptyMessage(int messageType) {
         Message message = Message.obtain(null, messageType);
         try {
             serviceMessenger.send(message);
@@ -108,11 +116,11 @@ public class SensorbergApplicationBootstrapper implements Plattform.ForegroundSt
         }
     }
 
-    private void unRegisterFromPresentationDelegation() {
+    protected void unRegisterFromPresentationDelegation() {
         sendReplyToMessage(SensorbergService.MSG_UNREGISTER_PRESENTATION_DELEGATE);
     }
 
-    private void sendReplyToMessage(int messageType) {
+    protected void sendReplyToMessage(int messageType) {
         if (serviceMessenger != null) {
             Message msg = Message.obtain(null, messageType);
             msg.replyTo = messenger;
@@ -124,7 +132,7 @@ public class SensorbergApplicationBootstrapper implements Plattform.ForegroundSt
         }
     }
 
-    private void registerForPresentationDelegation() {
+    protected void registerForPresentationDelegation() {
         sendReplyToMessage(SensorbergService.MSG_REGISTER_PRESENTATION_DELEGATE);
     }
 
