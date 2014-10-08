@@ -65,6 +65,7 @@ if (System.getProperty("sensorberg.useGithubRepo")) {
     uploadArchives.dependsOn(prepareGithubUpload)
     pushToGithub.dependsOn(uploadArchives)
 
+    prepareGithubUpload.dependsOn(verifyNoSnapshotDependencies)
     prepareGithubUpload.dependsOn(verifyReleaseBranch)
     prepareGithubUpload.dependsOn(verifyUpload)
 }
