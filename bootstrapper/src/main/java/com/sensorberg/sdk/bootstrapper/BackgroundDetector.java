@@ -1,12 +1,16 @@
 package com.sensorberg.sdk.bootstrapper;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Application;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 
 import com.sensorberg.sdk.internal.Plattform;
 
+
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class BackgroundDetector implements Application.ActivityLifecycleCallbacks {
     private final Runnable FOREGROUND = new Runnable() {
         @Override
