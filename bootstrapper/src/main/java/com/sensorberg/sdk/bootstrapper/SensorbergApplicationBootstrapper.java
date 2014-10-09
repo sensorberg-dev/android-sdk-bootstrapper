@@ -10,11 +10,13 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.Parcelable;
 import android.os.RemoteException;
 import android.util.Log;
 
 import com.sensorberg.sdk.Logger;
 import com.sensorberg.sdk.SensorbergService;
+import com.sensorberg.sdk.background.ScannerBroadcastReceiver;
 import com.sensorberg.sdk.internal.AndroidPlattform;
 import com.sensorberg.sdk.internal.Plattform;
 import com.sensorberg.sdk.presenter.PresenterConfiguration;
@@ -23,12 +25,12 @@ import com.sensorberg.sdk.resolver.BeaconEvent;
 public class SensorbergApplicationBootstrapper implements Plattform.ForegroundStateListener {
 
     private static final String TAG = "ServiceBootStrapper";
-    private final Application application;
+    protected final Application application;
 
     protected Messenger serviceMessenger;
     protected boolean presentationDelegationEnabled;
     protected boolean hostApplicationInForegroundNotDelivered;
-    private final Messenger messenger = new Messenger(new IncomingHandler());
+    protected final Messenger messenger = new Messenger(new IncomingHandler());
 
     class IncomingHandler extends Handler {
         @Override
@@ -46,12 +48,19 @@ public class SensorbergApplicationBootstrapper implements Plattform.ForegroundSt
         }
     }
 
-    public SensorbergApplicationBootstrapper(Application application, String apiKey, boolean enablePresentationDelegation, PresenterConfiguration presenterConfiguration) {
+    public SensorbergApplicationBootstrapper(Application application) {
+        this(application, false);
+    }
+
+    public SensorbergApplicationBootstrapper(Application application, boolean enablePresentationDelegation) {
         this.application = application;
         this.presentationDelegationEnabled = enablePresentationDelegation;
+    }
+
+    public void connectToService(String apiKey, PresenterConfiguration presenterConfiguration) {
         if(new AndroidPlattform(application).isBluetoothLowEnergySupported()) {
             Intent service = new Intent(application, SensorbergService.class);
-            service.putExtra(SensorbergService.EXTRA_PRESENTER_CONFIGURATION, presenterConfiguration);
+            service.putExtra(SensorbergService.EXTRA_PRESENTER_CONFIGURATION, (Parcelable) presenterConfiguration);
             service.putExtra(SensorbergService.EXTRA_API_KEY, apiKey);
             application.bindService(service, beaconServiceConnection, Context.BIND_AUTO_CREATE);
         }
@@ -77,13 +86,28 @@ public class SensorbergApplicationBootstrapper implements Plattform.ForegroundSt
     }
 
 
+    public void disableServiceCompletely(Context context){
 
-
-    public SensorbergApplicationBootstrapper(Application application, PresenterConfiguration presenterConfiguration, String apiKey) {
-        this(application, apiKey, false, presenterConfiguration);
+        ScannerBroadcastReceiver.setManifestReceiverEnabled(false, context);
+        try {
+            if(serviceMessenger != null){
+                sendEmptyMessage(SensorbergService.MSG_SHUTDOWN);
+            }
+            else{
+                Log.d("NearApplicationBootstrapper", "You are not even connected...");
+            }
+            context.unbindService(beaconServiceConnection);
+            serviceMessenger = null;
+        } catch (Exception e){
+            Log.e(TAG, "don´t disable twice!!!");
+            e.printStackTrace();
+        }
     }
 
-
+    public void enableService(Context context, String apiKey, PresenterConfiguration presenterConfiguration){
+        ScannerBroadcastReceiver.setManifestReceiverEnabled(true, context);
+        connectToService(apiKey, presenterConfiguration);
+    }
 
     @Override
     public void hostApplicationInBackground() {
@@ -166,7 +190,7 @@ public class SensorbergApplicationBootstrapper implements Plattform.ForegroundSt
         }
     }
 
-    private ServiceConnection beaconServiceConnection = new ServiceConnection() {
+    protected ServiceConnection beaconServiceConnection = new ServiceConnection() {
         // Called when the connection with the service is established
         public void onServiceConnected(ComponentName className, IBinder service) {
             Log.d(TAG,  "we have a connection to the service now");

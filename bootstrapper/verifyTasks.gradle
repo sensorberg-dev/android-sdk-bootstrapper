@@ -1,5 +1,5 @@
 
-task verifyUpload(type: Exec) {
+task verifyTagDoesNotExits(type: Exec) {
     description "verify if this build can be archived. fails if the git tag allready exists"
     doFirst{
         exec {
