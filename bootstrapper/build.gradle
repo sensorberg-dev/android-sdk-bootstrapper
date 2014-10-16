@@ -3,8 +3,6 @@ apply plugin: 'android-maven'
 
 
 repositories {
-    mavenCentral()
-    mavenLocal()
     maven {
         url "https://raw.github.com/sensorberg-dev/android-sdk/mvn-repo";
     }
@@ -78,6 +76,9 @@ else{
     uploadArchives.dependsOn(verifySnapshotRelease)
     uploadArchives.dependsOn(verifyTagDoesNotExits)
 }
+
+install.dependsOn(verifySnapshotRelease)
+install.dependsOn(verifyTagDoesNotExits)
 
 uploadArchives {
     repositories {
