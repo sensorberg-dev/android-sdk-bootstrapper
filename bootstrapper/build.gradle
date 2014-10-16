@@ -1,13 +1,16 @@
+apply plugin: 'com.android.library'
+apply plugin: 'android-maven'
+
 
 repositories {
-    mavenCentral()
     maven {
         url "https://raw.github.com/sensorberg-dev/android-sdk/mvn-repo";
     }
 }
 
-apply plugin: 'com.android.library'
-apply plugin: 'android-maven'
+group = "com.sensorberg.sdk.bootstrapper"
+archivesBaseName = 'sensorberg-sdk-bootstrapper'
+
 
 android {
     compileSdkVersion 20
@@ -74,6 +77,9 @@ else{
     uploadArchives.dependsOn(verifyTagDoesNotExits)
 }
 
+install.dependsOn(verifySnapshotRelease)
+install.dependsOn(verifyTagDoesNotExits)
+
 uploadArchives {
     repositories {
         mavenDeployer {
@@ -84,12 +90,11 @@ uploadArchives {
                 authentication(userName: System.getProperty("sensorberg.nexusUsername"), password: System.getProperty("sensorberg.nexusPassword"))
             }
 
-            pom.groupId = "com.sensorberg.sdk.bootstrapper"
-
             pom.project {
                 inceptionYear '2014'
                 name 'Sensorberg Android SDK Bootstrapper'
-                artifactId "sensorberg-sdk-bootstrapper"
+                artifactId project.archivesBaseName
+                groupId = project.group
                 packaging 'aar'
                 description 'Android SDK bootstrapper that helps to integrate the SDK'
                 url 'https://github.com/sensorberg-dev/android-sdk'
