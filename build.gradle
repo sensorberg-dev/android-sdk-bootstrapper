@@ -14,9 +14,7 @@ buildscript {
 allprojects {
     repositories {
         mavenCentral()
-        maven {
-            url "http://172.17.12.103:8881/nexus/content/repositories/snapshots"
-        }
+        mavenLocal()
     }
     setProperty("VERSION", VERSION)
 }
