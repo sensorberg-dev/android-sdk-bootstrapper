@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'android-maven'
 
-
 repositories {
     maven {
         url "https://raw.github.com/sensorberg-dev/android-sdk/mvn-repo";
@@ -10,7 +9,6 @@ repositories {
 
 group = "com.sensorberg.sdk.bootstrapper"
 archivesBaseName = 'sensorberg-sdk-bootstrapper'
-
 
 android {
     compileSdkVersion 20
@@ -28,7 +26,7 @@ android {
 }
 
 dependencies {
-    compile 'com.sensorberg.sdk:sensorberg-sdk:0.7.2'
+    compile 'com.sensorberg.sdk:sensorberg-sdk:0.8.0'
 }
 
 task sourcesJar(type: Jar) {
