@@ -39,10 +39,9 @@ artifacts {
 }
 
 group = "com.sensorberg.sdk.bootstrapper"
-artifactId = "sensorberg-sdk-bootstrapper"
-version = VERSION
+version = project.ext.SDK_VERSION
 
-project.ext.tagName = "v${VERSION}-bootstrapper"
+project.ext.tagName = "v${version}-bootstrapper"
 project.ext.branch = "mvn-repo"
 //the name of our origin
 project.ext.currentRemoteName = "origin"
@@ -50,10 +49,10 @@ project.ext.releaseRepo = "git@github.com:sensorberg-dev/android-sdk.git"
 
 if (System.getProperty("sensorberg.useGithubRepo")) {
     project.ext.repoDir = "${buildDir.path}/github-android-sdk"
-    version = "${VERSION}"
+    version = "${version}"
 } else {
     project.ext.repoDir = "file://${System.getProperty("user.home")}/.m2/repository/"
-    version = "${VERSION}-SNAPSHOT"
+    version = "${version}-SNAPSHOT"
 }
 
 apply from: "verifyTasks.gradle"
