@@ -26,10 +26,10 @@ android {
 
 if (System.getProperty("sensorberg.useGithubRepo")) {
     project.ext.repoDir = "${buildDir.path}/github-android-sdk"
-    version = "${version}"
+    version = "${project.ext.SDK_VERSION}"
 } else {
     project.ext.repoDir = "file://${System.getProperty("user.home")}/.m2/repository/"
-    version = "${version}-SNAPSHOT"
+    version = "${project.ext.SDK_VERSION}-SNAPSHOT"
 }
 
 if (System.getProperty("sensorberg.publishReleaseCandidate")) {
