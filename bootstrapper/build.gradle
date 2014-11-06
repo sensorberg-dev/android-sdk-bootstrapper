@@ -22,30 +22,7 @@ android {
     lintOptions {
         abortOnError false
     }
-
 }
-
-dependencies {
-    compile 'com.sensorberg.sdk:sensorberg-sdk:0.9.0-RC1'
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from android.sourceSets.main.java.srcDirs
-}
-
-artifacts {
-    archives sourcesJar
-}
-
-group = "com.sensorberg.sdk.bootstrapper"
-version = project.ext.SDK_VERSION
-
-project.ext.tagName = "v${version}-bootstrapper"
-project.ext.branch = "mvn-repo"
-//the name of our origin
-project.ext.currentRemoteName = "origin"
-project.ext.releaseRepo = "git@github.com:sensorberg-dev/android-sdk.git"
 
 if (System.getProperty("sensorberg.useGithubRepo")) {
     project.ext.repoDir = "${buildDir.path}/github-android-sdk"
@@ -58,6 +35,34 @@ if (System.getProperty("sensorberg.useGithubRepo")) {
 if (System.getProperty("sensorberg.publishReleaseCandidate")) {
     version = "${project.ext.SDK_VERSION}-RC1"
 }
+
+dependencies {
+    if (version.contains("RC")){
+        compile 'com.sensorberg.sdk:sensorberg-sdk:0.9.0-RC1'
+    }
+    else{
+        compile 'com.sensorberg.sdk:sensorberg-sdk:0.9.0-SNAPSHOT'
+    }
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+group = "com.sensorberg.sdk.bootstrapper"
+
+project.ext.tagName = "v${version}-bootstrapper"
+project.ext.branch = "mvn-repo"
+//the name of our origin
+project.ext.currentRemoteName = "origin"
+project.ext.releaseRepo = "git@github.com:sensorberg-dev/android-sdk.git"
+
+
 
 apply from: "verifyTasks.gradle"
 apply from: "uploadGithub.gradle"
