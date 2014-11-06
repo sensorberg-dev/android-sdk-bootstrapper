@@ -55,6 +55,10 @@ if (System.getProperty("sensorberg.useGithubRepo")) {
     version = "${version}-SNAPSHOT"
 }
 
+if (System.getProperty("sensorberg.publishReleaseCandidate")) {
+    version = "${project.ext.SDK_VERSION}-RC1"
+}
+
 apply from: "verifyTasks.gradle"
 apply from: "uploadGithub.gradle"
 
