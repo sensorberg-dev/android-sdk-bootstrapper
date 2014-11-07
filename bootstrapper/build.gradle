@@ -10,20 +10,6 @@ repositories {
 group = "com.sensorberg.sdk.bootstrapper"
 archivesBaseName = 'sensorberg-sdk-bootstrapper'
 
-android {
-    compileSdkVersion 20
-    buildToolsVersion "20.0"
-
-    defaultConfig {
-        minSdkVersion 9
-        targetSdkVersion 20
-    }
-
-    lintOptions {
-        abortOnError false
-    }
-}
-
 if (System.getProperty("sensorberg.useGithubRepo")) {
     project.ext.repoDir = "${buildDir.path}/github-android-sdk"
     version = "${project.ext.SDK_VERSION}"
@@ -33,8 +19,24 @@ if (System.getProperty("sensorberg.useGithubRepo")) {
 }
 
 if (System.getProperty("sensorberg.publishReleaseCandidate")) {
-    version = "${project.ext.SDK_VERSION}-RC2"
+    version = "${project.ext.SDK_VERSION}-RC3"
 }
+
+android {
+    compileSdkVersion 20
+    buildToolsVersion "20.0"
+
+    defaultConfig {
+        minSdkVersion 9
+        targetSdkVersion 20
+        versionName version
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
 
 dependencies {
     if (version.contains("RC")){
