@@ -19,7 +19,7 @@ if (System.getProperty("sensorberg.useGithubRepo")) {
 }
 
 if (System.getProperty("sensorberg.publishReleaseCandidate")) {
-    version = "${project.ext.SDK_VERSION}-RC3"
+    version = "${project.ext.SDK_VERSION}-RC4"
 }
 
 android {
@@ -40,7 +40,7 @@ android {
 
 dependencies {
     if (version.contains("RC")){
-        compile 'com.sensorberg.sdk:sensorberg-sdk:0.9.0-RC1'
+        compile 'com.sensorberg.sdk:sensorberg-sdk:0.9.0-RC2'
     } else if  (version.contains("SNAPSHOT")) {
         compile 'com.sensorberg.sdk:sensorberg-sdk:0.9.0-SNAPSHOT'
     } else{
