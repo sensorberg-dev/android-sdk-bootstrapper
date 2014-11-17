@@ -13,6 +13,7 @@ archivesBaseName = 'sensorberg-sdk-bootstrapper'
 if (System.getProperty("sensorberg.useGithubRepo")) {
     project.ext.repoDir = "${buildDir.path}/github-android-sdk"
     version = "${project.ext.SDK_VERSION}"
+    project.ext.branch = "mvn-repo"
 } else {
     project.ext.repoDir = "file://${System.getProperty("user.home")}/.m2/repository/"
     version = "${project.ext.SDK_VERSION}-SNAPSHOT"
@@ -20,6 +21,7 @@ if (System.getProperty("sensorberg.useGithubRepo")) {
 
 if (System.getProperty("sensorberg.publishReleaseCandidate")) {
     version = "${project.ext.SDK_VERSION}-RC5"
+    project.ext.branch = "mvn-repo-release-candidates"
 }
 
 android {
@@ -58,7 +60,6 @@ artifacts {
 }
 
 project.ext.tagName = "v${version}-bootstrapper"
-project.ext.branch = "mvn-repo"
 //the name of our origin
 project.ext.currentRemoteName = "origin"
 project.ext.releaseRepo = "git@github.com:sensorberg-dev/android-sdk.git"
