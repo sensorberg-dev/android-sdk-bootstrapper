@@ -10,7 +10,10 @@ repositories {
 group = "com.sensorberg.sdk.bootstrapper"
 archivesBaseName = 'sensorberg-sdk-bootstrapper'
 
-if (System.getProperty("sensorberg.useGithubRepo")) {
+def useGithubRepo =  System.getProperty("sensorberg.useGithubRepo")
+def releaseCandidate = System.getProperty("sensorberg.publishReleaseCandidate");
+
+if (useGithubRepo) {
     project.ext.repoDir = "${buildDir.path}/github-android-sdk"
     version = "${project.ext.SDK_VERSION}"
     project.ext.branch = "mvn-repo"
@@ -19,7 +22,7 @@ if (System.getProperty("sensorberg.useGithubRepo")) {
     version = "${project.ext.SDK_VERSION}-SNAPSHOT"
 }
 
-if (System.getProperty("sensorberg.publishReleaseCandidate")) {
+if (releaseCandidate) {
     version = "${project.ext.SDK_VERSION}-RC5"
     project.ext.branch = "mvn-repo-release-candidates"
 }
@@ -69,7 +72,7 @@ project.ext.releaseRepo = "git@github.com:sensorberg-dev/android-sdk.git"
 apply from: "verifyTasks.gradle"
 apply from: "uploadGithub.gradle"
 
-if (System.getProperty("sensorberg.useGithubRepo")) {
+if (useGithubRepo) {
     uploadArchives.mustRunAfter(prepareGithubUpload)
     pushToGithub.mustRunAfter(uploadArchives)
 
@@ -77,8 +80,11 @@ if (System.getProperty("sensorberg.useGithubRepo")) {
     pushToGithub.dependsOn(uploadArchives)
 
     prepareGithubUpload.dependsOn(verifyNoSnapshotDependencies)
-    prepareGithubUpload.dependsOn(verifyReleaseBranch)
     prepareGithubUpload.dependsOn(verifyTagDoesNotExits)
+
+    if(!releaseCandidate){
+        prepareGithubUpload.dependsOn(verifyReleaseBranch)
+    }
 }
 else{
     uploadArchives.dependsOn(verifySnapshotRelease)
