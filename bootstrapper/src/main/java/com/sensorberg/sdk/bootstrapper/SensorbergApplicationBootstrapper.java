@@ -21,7 +21,6 @@ public class SensorbergApplicationBootstrapper implements Plattform.ForegroundSt
     private static final String TAG = "ServiceBootStrapper";
     protected final Context context;
 
-    protected Messenger serviceMessenger;
     protected boolean presentationDelegationEnabled;
     protected final Messenger messenger = new Messenger(new IncomingHandler());
 
@@ -94,10 +93,8 @@ public class SensorbergApplicationBootstrapper implements Plattform.ForegroundSt
     
     public void hostApplicationInBackground() {
         Logger.log.applicationStateChanged("hostApplicationInBackground");
-        if (serviceMessenger != null) {
-            sendEmptyMessage(SensorbergService.MSG_APPLICATION_IN_BACKGROUND);
-            unRegisterFromPresentationDelegation();
-        }
+        sendEmptyMessage(SensorbergService.MSG_APPLICATION_IN_BACKGROUND);
+        unRegisterFromPresentationDelegation();
     }
 
     
