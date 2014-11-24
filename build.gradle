@@ -1,5 +1,5 @@
 
-def VERSION = "1.8.2"
+def VERSION = "1.8.3"
 
 buildscript {
     repositories {
