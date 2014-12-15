@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-maven'
+apply plugin: 'com.github.dcendents.android-maven'
 
 repositories {
     maven {
@@ -23,13 +23,13 @@ if (useGithubRepo) {
 }
 
 if (releaseCandidate) {
-    version = "${project.ext.SDK_VERSION}-RC6"
+    version = "${project.ext.SDK_VERSION}-RC9"
     project.ext.branch = "mvn-repo-release-candidates"
 }
 
 android {
-    compileSdkVersion 20
-    buildToolsVersion "20.0"
+    compileSdkVersion 21
+    buildToolsVersion "21.1.1"
 
     defaultConfig {
         minSdkVersion 9
@@ -45,7 +45,7 @@ android {
 
 dependencies {
     if (version.contains("RC")){
-        compile 'com.sensorberg.sdk:sensorberg-sdk:0.9.0-RC2'
+        compile 'com.sensorberg.sdk:sensorberg-sdk:0.9.0-RC9'
     } else if  (version.contains("SNAPSHOT")) {
         compile 'com.sensorberg.sdk:sensorberg-sdk:0.9.0-SNAPSHOT'
     } else{
@@ -62,7 +62,8 @@ artifacts {
     archives sourcesJar
 }
 
-project.ext.tagName = "v${version}-bootstrapper"
+project.ext.tagName = "v${project.ext.SDK_VERSION}-bootstrapper"
+project.ext.branch = "mvn-repo"
 //the name of our origin
 project.ext.currentRemoteName = "origin"
 project.ext.releaseRepo = "git@github.com:sensorberg-dev/android-sdk.git"

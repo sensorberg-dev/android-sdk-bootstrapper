@@ -88,6 +88,7 @@ public class SensorbergApplicationBootstrapper implements Plattform.ForegroundSt
     public void enableService(Context context, String apiKey, PresenterConfiguration presenterConfiguration) {
         ScannerBroadcastReceiver.setManifestReceiverEnabled(true, context);
         connectToService(apiKey, presenterConfiguration);
+        hostApplicationInForeground();
     }
 
     
