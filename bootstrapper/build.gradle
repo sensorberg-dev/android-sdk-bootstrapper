@@ -63,7 +63,7 @@ artifacts {
     archives sourcesJar
 }
 
-project.ext.tagName = "v${project.ext.SDK_VERSION}-bootstrapper"
+project.ext.tagName = "v${version}-bootstrapper"
 //the name of our origin
 project.ext.currentRemoteName = "origin"
 project.ext.releaseRepo = "git@github.com:sensorberg-dev/android-sdk.git"
