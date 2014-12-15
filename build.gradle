@@ -1,13 +1,13 @@
 
-def VERSION = "1.8.4"
+
 
 buildscript {
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.+'
-        classpath 'com.github.dcendents:android-maven-plugin:1.0'
+        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'com.github.dcendents:android-maven-plugin:1.2'
     }
 }
 
@@ -16,9 +16,9 @@ allprojects {
         mavenCentral()
         mavenLocal()
     }
-    setProperty("VERSION", VERSION)
+    project.ext.SDK_VERSION = "1.8.4"
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.12'
+    gradleVersion = '2.2.1'
 }

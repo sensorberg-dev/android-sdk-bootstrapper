@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-maven'
+apply plugin: 'com.github.dcendents.android-maven'
 
 repositories {
     maven {
@@ -11,8 +11,8 @@ group = "com.sensorberg.sdk.bootstrapper"
 archivesBaseName = 'sensorberg-sdk-bootstrapper'
 
 android {
-    compileSdkVersion 20
-    buildToolsVersion "20.0"
+    compileSdkVersion 21
+    buildToolsVersion "21.1.1"
 
     defaultConfig {
         minSdkVersion 9
@@ -38,11 +38,7 @@ artifacts {
     archives sourcesJar
 }
 
-group = "com.sensorberg.sdk.bootstrapper"
-artifactId = "sensorberg-sdk-bootstrapper"
-version = VERSION
-
-project.ext.tagName = "v${VERSION}-bootstrapper"
+project.ext.tagName = "v${project.ext.SDK_VERSION}-bootstrapper"
 project.ext.branch = "mvn-repo"
 //the name of our origin
 project.ext.currentRemoteName = "origin"
@@ -50,10 +46,10 @@ project.ext.releaseRepo = "git@github.com:sensorberg-dev/android-sdk.git"
 
 if (System.getProperty("sensorberg.useGithubRepo")) {
     project.ext.repoDir = "${buildDir.path}/github-android-sdk"
-    version = "${VERSION}"
+    version = "${project.ext.SDK_VERSION}"
 } else {
     project.ext.repoDir = "file://${System.getProperty("user.home")}/.m2/repository/"
-    version = "${VERSION}-SNAPSHOT"
+    version = "${project.ext.SDK_VERSION}-SNAPSHOT"
 }
 
 apply from: "verifyTasks.gradle"
