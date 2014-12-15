@@ -95,32 +95,32 @@ else{
 install.dependsOn(verifySnapshotRelease)
 install.dependsOn(verifyTagDoesNotExits)
 
-    uploadArchives {
-        repositories {
-            mavenDeployer {
+uploadArchives {
+    repositories {
+        mavenDeployer {
 
-                repository(url: "file://${project.ext.repoDir}")
+            repository(url: "file://${project.ext.repoDir}")
 
-                snapshotRepository(url: "http://172.17.12.103:8881/nexus/content/repositories/snapshots"){
-                    authentication(userName: System.getProperty("sensorberg.nexusUsername"), password: System.getProperty("sensorberg.nexusPassword"))
-                }
-
-                pom.project {
-                    inceptionYear '2014'
-                    name 'Sensorberg Android SDK Bootstrapper'
-                    artifactId project.archivesBaseName
-                    groupId = project.group
-                    packaging 'aar'
-                    description 'Android SDK bootstrapper that helps to integrate the SDK'
-                    url 'https://github.com/sensorberg-dev/android-sdk'
-
-                    scm {
-                        url 'https://github.com/sensorberg-dev/android-sdk-bootstrapper'
-                        connection 'https://github.com/sensorberg-dev/android-sdk-bootstrapper'
-                        developerConnection 'https://github.com/sensorberg-dev/android-sdk-bootstrapper'
-                    }
-                }
+            snapshotRepository(url: "http://172.17.12.103:8881/nexus/content/repositories/snapshots"){
+                authentication(userName: System.getProperty("sensorberg.nexusUsername"), password: System.getProperty("sensorberg.nexusPassword"))
             }
 
+            pom.project {
+                inceptionYear '2014'
+                name 'Sensorberg Android SDK Bootstrapper'
+                artifactId project.archivesBaseName
+                groupId = project.group
+                packaging 'aar'
+                description 'Android SDK bootstrapper that helps to integrate the SDK'
+                url 'https://github.com/sensorberg-dev/android-sdk'
+
+                scm {
+                    url 'https://github.com/sensorberg-dev/android-sdk-bootstrapper'
+                    connection 'https://github.com/sensorberg-dev/android-sdk-bootstrapper'
+                    developerConnection 'https://github.com/sensorberg-dev/android-sdk-bootstrapper'
+                }
+            }
         }
+
     }
+}
