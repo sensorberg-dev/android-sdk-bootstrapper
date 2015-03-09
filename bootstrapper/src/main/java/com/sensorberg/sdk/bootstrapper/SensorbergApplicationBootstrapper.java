@@ -11,12 +11,13 @@ import android.os.Parcelable;
 import com.sensorberg.sdk.Logger;
 import com.sensorberg.sdk.SensorbergService;
 import com.sensorberg.sdk.background.ScannerBroadcastReceiver;
-import com.sensorberg.sdk.internal.AndroidPlattform;
-import com.sensorberg.sdk.internal.Plattform;
+import com.sensorberg.sdk.internal.AndroidPlatform;
+import com.sensorberg.sdk.internal.AndroidPlatform;
+import com.sensorberg.sdk.internal.Platform;
 import com.sensorberg.sdk.presenter.PresenterConfiguration;
 import com.sensorberg.sdk.resolver.BeaconEvent;
 
-public class SensorbergApplicationBootstrapper implements Plattform.ForegroundStateListener {
+public class SensorbergApplicationBootstrapper implements Platform.ForegroundStateListener {
 
     private static final String TAG = "ServiceBootStrapper";
     protected final Context context;
@@ -51,7 +52,7 @@ public class SensorbergApplicationBootstrapper implements Plattform.ForegroundSt
 
     
     public void connectToService(String apiKey, PresenterConfiguration presenterConfiguration) {
-        if (new AndroidPlattform(context).isBluetoothLowEnergySupported()) {
+        if (new AndroidPlatform(context).isBluetoothLowEnergySupported()) {
             Intent service = new Intent(context, SensorbergService.class);
             service.putExtra(SensorbergService.EXTRA_START_SERVICE, 1);
             service.putExtra(SensorbergService.EXTRA_PRESENTER_CONFIGURATION, (Parcelable) presenterConfiguration);

@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         mavenCentral()
+        mavenLocal()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.0.0'
@@ -12,8 +13,9 @@ allprojects {
     repositories {
         mavenCentral()
         mavenLocal()
+        jcenter()
     }
-    project.ext.SDK_VERSION = "1.9.0"
+    project.ext.SDK_VERSION = "1.10.0"
 }
 
 task wrapper(type: Wrapper) {

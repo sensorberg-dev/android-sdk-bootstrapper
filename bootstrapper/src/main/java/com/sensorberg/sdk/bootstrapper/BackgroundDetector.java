@@ -7,7 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.sensorberg.sdk.internal.Plattform;
+import com.sensorberg.sdk.internal.Platform;
 
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -33,9 +33,9 @@ public class BackgroundDetector implements Application.ActivityLifecycleCallback
     private final Handler handler;
     private boolean isInForeground = false;
     private boolean appForeGroundState = isInForeground;
-    private Plattform.ForegroundStateListener foregroundStateListener = Plattform.ForegroundStateListener.NONE;
+    private Platform.ForegroundStateListener foregroundStateListener = Platform.ForegroundStateListener.NONE;
 
-    public BackgroundDetector(Plattform.ForegroundStateListener foregroundStateListener){
+    public BackgroundDetector(Platform.ForegroundStateListener foregroundStateListener){
         this.handler = new Handler();
         this.foregroundStateListener = foregroundStateListener;
     }
