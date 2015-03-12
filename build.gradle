@@ -22,6 +22,7 @@ allprojects {
         }
     }
     project.ext.SDK_VERSION = "1.10.0"
+    project.ext.RC_VERSION = "RC1"
 
     configurations.all {
         // check for updates every build

@@ -23,7 +23,7 @@ if (useGithubRepo) {
 }
 
 if (releaseCandidate) {
-    version = "${project.ext.SDK_VERSION}-RC1"
+    version = "${project.ext.SDK_VERSION}-${project.ext.RC_VERSION}"
     project.ext.branch = "mvn-repo-release-candidates"
 }
 
