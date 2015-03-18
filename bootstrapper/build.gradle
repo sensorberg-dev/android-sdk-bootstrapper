@@ -102,7 +102,7 @@ uploadArchives {
             repository(url: "file://${project.ext.repoDir}")
 
             snapshotRepository(url: "http://172.17.12.103:8881/nexus/content/repositories/snapshots"){
-                authentication(userName: System.getProperty("sensorberg.nexusUsername"), password: System.getProperty("sensorberg.nexusPassword"))
+                authentication(userName: "deployment", password: "deployment123")
             }
 
             pom.project {
