@@ -12,17 +12,16 @@ buildscript {
 allprojects {
     repositories {
         mavenCentral()
-        mavenLocal()
         jcenter()
         maven {
             url 'http://172.17.12.103:8881/nexus/content/repositories/snapshots/'
         }
         maven {
-            url 'http://dl.bintray.com/sensorberg/maven'
+            url "https://raw.github.com/sensorberg-dev/android-sdk/mvn-repo-release-candidates"
         }
     }
     project.ext.SDK_VERSION = "1.10.0"
-    project.ext.RC_VERSION = "RC1"
+    project.ext.RC_VERSION = "RC3"
 
     configurations.all {
         // check for updates every build

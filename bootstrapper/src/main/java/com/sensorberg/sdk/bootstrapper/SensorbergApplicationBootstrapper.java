@@ -6,27 +6,25 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.Parcelable;
 
 import com.sensorberg.sdk.Logger;
 import com.sensorberg.sdk.SensorbergService;
 import com.sensorberg.sdk.background.ScannerBroadcastReceiver;
 import com.sensorberg.sdk.internal.AndroidPlatform;
-import com.sensorberg.sdk.internal.AndroidPlatform;
 import com.sensorberg.sdk.internal.Platform;
-import com.sensorberg.sdk.presenter.PresenterConfiguration;
 import com.sensorberg.sdk.resolver.BeaconEvent;
+
+import java.net.URL;
 
 public class SensorbergApplicationBootstrapper implements Platform.ForegroundStateListener {
 
-    private static final String TAG = "ServiceBootStrapper";
     protected final Context context;
 
     protected boolean presentationDelegationEnabled;
     protected final Messenger messenger = new Messenger(new IncomingHandler());
 
     class IncomingHandler extends Handler {
-        
+
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SensorbergService.MSG_PRESENT_ACTION:
@@ -50,26 +48,34 @@ public class SensorbergApplicationBootstrapper implements Platform.ForegroundSta
         this.presentationDelegationEnabled = enablePresentationDelegation;
     }
 
-    
-    public void connectToService(String apiKey, PresenterConfiguration presenterConfiguration) {
+    public void activateService() {
+        activateService(null);
+    }
+
+    public void activateService(String apiKey) {
         if (new AndroidPlatform(context).isBluetoothLowEnergySupported()) {
             Intent service = new Intent(context, SensorbergService.class);
             service.putExtra(SensorbergService.EXTRA_START_SERVICE, 1);
-            service.putExtra(SensorbergService.EXTRA_PRESENTER_CONFIGURATION, (Parcelable) presenterConfiguration);
-            service.putExtra(SensorbergService.EXTRA_API_KEY, apiKey);
+            if (apiKey != null) {
+                service.putExtra(SensorbergService.EXTRA_API_KEY, apiKey);
+            }
             context.startService(service);
         }
-
     }
 
-    
     public void presentBeaconEvent(BeaconEvent beaconEvent) {
-        Intent intent = ActionActivity.intentFor(context, beaconEvent);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+
     }
 
-    
+    public void setResolverBaseURL(URL resolverBaseURL) {
+        Intent service = new Intent(context, SensorbergService.class);
+        service.putExtra(SensorbergService.EXTRA_GENERIC_WHAT, SensorbergService.MSG_TYPE_SET_RESOLVER_ENDPOINT);
+        if (resolverBaseURL != null) {
+            service.putExtra(SensorbergService.MSG_SET_RESOLVER_ENDPOINT_ENDPOINT_URL, resolverBaseURL);
+        }
+        context.startService(service);
+    }
+
     public void setPresentationDelegationEnabled(boolean value) {
         presentationDelegationEnabled = value;
         if (value) {
@@ -79,27 +85,27 @@ public class SensorbergApplicationBootstrapper implements Platform.ForegroundSta
         }
     }
 
-
-    
     public void disableServiceCompletely(Context context) {
         sendEmptyMessage(SensorbergService.MSG_SHUTDOWN);
     }
 
-    
-    public void enableService(Context context, String apiKey, PresenterConfiguration presenterConfiguration) {
+    public void enableService(Context context) {
+        enableService(context, null);
+    }
+
+    public void enableService(Context context, String apiKey) {
         ScannerBroadcastReceiver.setManifestReceiverEnabled(true, context);
-        connectToService(apiKey, presenterConfiguration);
+        activateService(apiKey);
         hostApplicationInForeground();
     }
 
-    
     public void hostApplicationInBackground() {
         Logger.log.applicationStateChanged("hostApplicationInBackground");
         sendEmptyMessage(SensorbergService.MSG_APPLICATION_IN_BACKGROUND);
         unRegisterFromPresentationDelegation();
     }
 
-    
+
     public void hostApplicationInForeground() {
         sendEmptyMessage(SensorbergService.MSG_APPLICATION_IN_FOREGROUND);
         if (presentationDelegationEnabled) {
@@ -128,19 +134,10 @@ public class SensorbergApplicationBootstrapper implements Platform.ForegroundSta
         sendReplyToMessage(SensorbergService.MSG_REGISTER_PRESENTATION_DELEGATE);
     }
 
-    
     public void changeAPIToken(String newApiToken) {
         Intent service = new Intent(context, SensorbergService.class);
         service.putExtra(SensorbergService.EXTRA_GENERIC_TYPE, SensorbergService.MSG_SET_API_TOKEN);
         service.putExtra(SensorbergService.MSG_SET_API_TOKEN_TOKEN, newApiToken);
-        context.startService(service);
-    }
-
-    
-    public void updatePresenterConfiguration(PresenterConfiguration presenterConfiguration) {
-        Intent service = new Intent(context, SensorbergService.class);
-        service.putExtra(SensorbergService.EXTRA_GENERIC_TYPE, SensorbergService.MSG_SET_PRESENTER_CONFIGURATION);
-        service.putExtra(SensorbergService.MSG_SET_PRESENTER_CONFIGURATION_PRESENTER_CONFIGURATION, (Parcelable) presenterConfiguration);
         context.startService(service);
     }
 }
