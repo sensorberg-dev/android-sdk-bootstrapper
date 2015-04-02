@@ -14,6 +14,8 @@ import com.sensorberg.sdk.internal.AndroidPlatform;
 import com.sensorberg.sdk.internal.Platform;
 import com.sensorberg.sdk.resolver.BeaconEvent;
 
+import java.net.URL;
+
 public class SensorbergApplicationBootstrapper implements Platform.ForegroundStateListener {
 
     protected final Context context;
@@ -46,12 +48,11 @@ public class SensorbergApplicationBootstrapper implements Platform.ForegroundSta
         this.presentationDelegationEnabled = enablePresentationDelegation;
     }
 
-    public void connectToService() {
-        connectToService(null);
+    public void activateService() {
+        activateService(null);
     }
 
-
-    public void connectToService(String apiKey) {
+    public void activateService(String apiKey) {
         if (new AndroidPlatform(context).isBluetoothLowEnergySupported()) {
             Intent service = new Intent(context, SensorbergService.class);
             service.putExtra(SensorbergService.EXTRA_START_SERVICE, 1);
@@ -63,9 +64,16 @@ public class SensorbergApplicationBootstrapper implements Platform.ForegroundSta
     }
 
     public void presentBeaconEvent(BeaconEvent beaconEvent) {
-        Intent intent = ActionActivity.intentFor(context, beaconEvent);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+
+    }
+
+    public void setResolverBaseURL(URL resolverBaseURL) {
+        Intent service = new Intent(context, SensorbergService.class);
+        service.putExtra(SensorbergService.EXTRA_GENERIC_WHAT, SensorbergService.MSG_TYPE_SET_RESOLVER_ENDPOINT);
+        if (resolverBaseURL != null) {
+            service.putExtra(SensorbergService.MSG_SET_RESOLVER_ENDPOINT_ENDPOINT_URL, resolverBaseURL);
+        }
+        context.startService(service);
     }
 
     public void setPresentationDelegationEnabled(boolean value) {
@@ -87,10 +95,9 @@ public class SensorbergApplicationBootstrapper implements Platform.ForegroundSta
 
     public void enableService(Context context, String apiKey) {
         ScannerBroadcastReceiver.setManifestReceiverEnabled(true, context);
-        connectToService(apiKey);
+        activateService(apiKey);
         hostApplicationInForeground();
     }
-
 
     public void hostApplicationInBackground() {
         Logger.log.applicationStateChanged("hostApplicationInBackground");
