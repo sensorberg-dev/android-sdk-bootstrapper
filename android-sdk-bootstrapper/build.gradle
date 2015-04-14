@@ -1,0 +1,49 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group = "com.sensorberg.sdk"
+archivesBaseName = 'android-sdk-bootstrapper'
+version = "${project.ext.SDK_VERSION}${project.ext.RC_VERSION}"
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.1"
+
+    defaultConfig {
+        minSdkVersion 9
+        targetSdkVersion 20
+        versionName version
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    compile 'com.sensorberg.sdk:android-sdk:0.10.0RC17'
+}
+
+apply from: '../bintrayUpload.gradle'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.project {
+                inceptionYear '2014'
+                name 'Sensorberg Android SDK Bootstrapper'
+                artifactId project.archivesBaseName
+                groupId = project.group
+                packaging 'aar'
+                description 'Android SDK bootstrapper that helps to integrate the SDK'
+                url 'https://github.com/sensorberg-dev/android-sdk'
+
+                scm {
+                    url 'https://github.com/sensorberg-dev/android-sdk-bootstrapper'
+                    connection 'https://github.com/sensorberg-dev/android-sdk-bootstrapper'
+                    developerConnection 'https://github.com/sensorberg-dev/android-sdk-bootstrapper'
+                }
+            }
+        }
+    }
+}

@@ -1,1 +1,1 @@
-include ':bootstrapper'
+include ':android-sdk-bootstrapper'

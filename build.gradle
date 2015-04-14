@@ -1,11 +1,12 @@
 buildscript {
     repositories {
         mavenCentral()
-        mavenLocal()
+        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.0.0'
         classpath 'com.github.dcendents:android-maven-plugin:1.2'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.1'
     }
 }
 
@@ -14,14 +15,11 @@ allprojects {
         mavenCentral()
         jcenter()
         maven {
-            url 'http://172.17.12.103:8881/nexus/content/repositories/snapshots/'
-        }
-        maven {
-            url "https://raw.github.com/sensorberg-dev/android-sdk/mvn-repo-release-candidates"
+            url 'https://dl.bintray.com/sensorberg/maven/'
         }
     }
     project.ext.SDK_VERSION = "1.10.0"
-    project.ext.RC_VERSION = "RC3"
+    project.ext.RC_VERSION = "RC17"
 
     configurations.all {
         // check for updates every build
