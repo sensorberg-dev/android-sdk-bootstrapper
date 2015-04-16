@@ -1,12 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
-repositories {
-    maven {
-        url "https://raw.github.com/sensorberg-dev/android-sdk/mvn-repo";
-    }
-}
-
 group = "com.sensorberg.sdk.bootstrapper"
 archivesBaseName = 'sensorberg-sdk-bootstrapper'
 
@@ -28,8 +22,8 @@ if (releaseCandidate) {
 }
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    compileSdkVersion project.ext.compileSdkVersion
+    buildToolsVersion project.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion 9
