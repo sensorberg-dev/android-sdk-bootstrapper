@@ -12,8 +12,15 @@ allprojects {
     repositories {
         mavenCentral()
         mavenLocal()
+        jcenter()
+        maven {
+            url "https://raw.github.com/sensorberg-dev/android-sdk/mvn-repo";
+        }
     }
     project.ext.SDK_VERSION = "1.9.3"
+
+    project.ext.compileSdkVersion = 21
+    project.ext.buildToolsVersion = "21.1.1"
 }
 
 task wrapper(type: Wrapper) {
