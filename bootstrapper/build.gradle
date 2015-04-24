@@ -39,11 +39,11 @@ android {
 
 dependencies {
     if (version.contains("RC")){
-        compile 'com.sensorberg.sdk:sensorberg-sdk:0.10.0-RC10'
+        compile 'com.sensorberg.sdk:sensorberg-sdk:1.0.0RC4'
     } else if  (version.contains("SNAPSHOT")) {
-        compile 'com.sensorberg.sdk:sensorberg-sdk:0.10.0-RC10'
+        compile 'com.sensorberg.sdk:sensorberg-sdk:1.0.0RC4'
     } else{
-        compile 'com.sensorberg.sdk:sensorberg-sdk:0.10.0'
+        compile 'com.sensorberg.sdk:sensorberg-sdk:1.0.0RC4'
     }
 }
 

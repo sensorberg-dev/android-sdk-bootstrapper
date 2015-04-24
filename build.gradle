@@ -14,6 +14,9 @@ allprojects {
         mavenCentral()
         jcenter()
         maven {
+            url "https://dl.bintray.com/sensorberg/maven/"
+        }
+        maven {
             url 'http://172.17.12.103:8881/nexus/content/repositories/snapshots/'
         }
         maven {
@@ -23,8 +26,8 @@ allprojects {
             url "https://raw.github.com/sensorberg-dev/android-sdk/mvn-repo"
         }
     }
-    project.ext.SDK_VERSION = "1.10.0"
-    project.ext.RC_VERSION = "RC3"
+    project.ext.SDK_VERSION = "2.0.0"
+    project.ext.RC_VERSION = "RC4"
 
     project.ext.compileSdkVersion = 21
     project.ext.buildToolsVersion = "21.1.1"
