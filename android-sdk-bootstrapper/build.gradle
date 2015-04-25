@@ -6,12 +6,12 @@ archivesBaseName = 'android-sdk-bootstrapper'
 version = "${project.ext.SDK_VERSION}${project.ext.RC_VERSION}"
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    compileSdkVersion project.ext.compileSdkVersion
+    buildToolsVersion project.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 20
+        targetSdkVersion 21
         versionName version
     }
 
@@ -21,7 +21,7 @@ android {
 }
 
 dependencies {
-    compile 'com.sensorberg.sdk:android-sdk:0.10.0RC17'
+    compile 'com.sensorberg.sdk:android-sdk:1.0.0RC4'
 }
 
 apply from: '../bintrayUpload.gradle'
