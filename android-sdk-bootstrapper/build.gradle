@@ -21,7 +21,7 @@ android {
 }
 
 dependencies {
-    compile 'com.sensorberg.sdk:android-sdk:1.0.0RC4'
+    compile 'com.sensorberg.sdk:android-sdk:1.0.0RC5'
 }
 
 apply from: '../bintrayUpload.gradle'
