@@ -32,7 +32,7 @@ be aware that **beaconEvent.getAction()** might be null, because there is no act
 
  #Release
 
- Set your release name in the root **build.gradle**. If you want a regular release, leave the **project.ext.RC_VERSION** as an empty string.
+ Set your release name in the root **build.gradle**. If you want a regular release, leave the **project.ext.RC_VERSION** as an empty string. Update the SDK reference in the **android-sdk-boostrapper/build.gradle** file.
 
  paste your credentials in the **bintray.properties** file.
 
