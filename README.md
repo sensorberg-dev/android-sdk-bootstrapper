@@ -28,4 +28,18 @@ be aware that **beaconEvent.getAction()** might be null, because there is no act
 
 ##1.0.1
 
-* removed the fixed icon of the presentation configuration, if you want an icon, extend the bootstrapper and write your own void presentBeaconEvent(BeaconEvent beaconEvent) 
+* removed the fixed icon of the presentation configuration, if you want an icon, extend the bootstrapper and write your own void presentBeaconEvent(BeaconEvent beaconEvent)
+
+ #Release
+
+ Set your release name in the root **build.gradle**. If you want a regular release, leave the **project.ext.RC_VERSION** as an empty string.
+
+ paste your credentials in the **bintray.properties** file.
+
+ run
+
+ ``` bash
+ 	./gradlew clean android-sdk-bootstrapper:bintrayUpload
+ ```
+
+ If you want to test the procedure, change the **dryRun** variable in the **bintrayUpload.gradle** file to *true* temporarely. The --info flag will give you details if you need them.
