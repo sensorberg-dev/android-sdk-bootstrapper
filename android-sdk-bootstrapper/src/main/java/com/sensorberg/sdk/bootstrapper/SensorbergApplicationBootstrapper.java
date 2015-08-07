@@ -48,10 +48,6 @@ public class SensorbergApplicationBootstrapper implements Platform.ForegroundSta
         this.presentationDelegationEnabled = enablePresentationDelegation;
     }
 
-    public void activateService() {
-        activateService(null);
-    }
-
     public void activateService(String apiKey) {
         if (new AndroidPlatform(context).isBluetoothLowEnergySupported()) {
             Intent service = new Intent(context, SensorbergService.class);
@@ -89,9 +85,6 @@ public class SensorbergApplicationBootstrapper implements Platform.ForegroundSta
         sendEmptyMessage(SensorbergService.MSG_SHUTDOWN);
     }
 
-    public void enableService(Context context) {
-        enableService(context, null);
-    }
 
     public void enableService(Context context, String apiKey) {
         ScannerBroadcastReceiver.setManifestReceiverEnabled(true, context);

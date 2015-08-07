@@ -3,7 +3,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 
 group = "com.sensorberg.sdk"
 archivesBaseName = 'android-sdk-bootstrapper'
-version = "${project.ext.SDK_VERSION}${project.ext.RC_VERSION}"
+version = "${project.ext.VERSION}${project.ext.RC_VERSION}"
 
 android {
     compileSdkVersion project.ext.compileSdkVersion
@@ -21,7 +21,7 @@ android {
 }
 
 dependencies {
-    compile 'com.sensorberg.sdk:android-sdk:1.0.0'
+    compile 'com.sensorberg.sdk:android-sdk:1.0.3RC2'
 }
 
 apply from: '../bintrayUpload.gradle'
