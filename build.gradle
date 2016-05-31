@@ -21,7 +21,7 @@ allprojects {
             url "https://raw.github.com/sensorberg-dev/android-sdk/mvn-repo"
         }
     }
-    project.ext.SDK_VERSION = "2.1.0"
+    project.ext.SDK_VERSION = "2.2.0"
     project.ext.RC_VERSION = "RC1"
 
     project.ext.compileSdkVersion = 21

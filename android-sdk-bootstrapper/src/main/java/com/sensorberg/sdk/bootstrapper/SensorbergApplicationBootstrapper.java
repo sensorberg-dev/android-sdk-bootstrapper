@@ -144,7 +144,7 @@ public class SensorbergApplicationBootstrapper implements Platform.ForegroundSta
     public void setAdvertisingIdentifier(String advertisingIdentifier) {
         Intent service = new Intent(context, SensorbergService.class);
         service.putExtra(SensorbergService.EXTRA_GENERIC_TYPE, SensorbergService.MSG_SET_API_ADVERTISING_IDENTIFIER);
-        service.putExtra(SensorbergService.MSG_SET_API_ADVERTISING_IDENTIFIER_ADVERTISING_IDENTIFIERR, advertisingIdentifier);
+        service.putExtra(SensorbergService.MSG_SET_API_ADVERTISING_IDENTIFIER_ADVERTISING_IDENTIFIER, advertisingIdentifier);
         context.startService(service);
     }
 }
