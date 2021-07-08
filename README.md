@@ -13,9 +13,9 @@ maven {
 }
 ```
 
-#What can you do with this:
+# What can you do with this:
 
-##Custom presentation of the Messages:
+## Custom presentation of the Messages:
 
 If you want to present the messages yourself, extend the Bootstrapper and implement your own
 ```
@@ -26,7 +26,7 @@ be aware that **beaconEvent.getAction()** might be null, because there is no act
 
 #Release Notes:
 
-##1.0.1
+## 1.0.1
 
 * removed the fixed icon of the presentation configuration, if you want an icon, extend the bootstrapper and write your own void presentBeaconEvent(BeaconEvent beaconEvent)
 
